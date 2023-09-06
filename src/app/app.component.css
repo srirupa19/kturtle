@@ -1,0 +1,137 @@
+html, body {
+    overflow: hidden;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.kturtle-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 1%;
+}
+
+.text-editor{
+    flex-basis: calc(50% - 20px);
+    box-sizing: border-box;
+    padding: 10px;
+}
+.canvas {
+    flex-basis: calc(50% - 20px);
+    box-sizing: border-box;
+    padding: 10px;
+}
+
+textarea {
+    width: 98.8%;
+    height: 500px;
+    padding: 0.5%;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    /* border-radius: 5px; */
+    resize: vertical;
+}
+
+.display-area {
+    background-color: lightyellow;
+    padding: 0.5%;
+    border: 1px solid #ccc;
+    height: 100px; /* Adjust the height as needed */
+    width: 98.8%;
+    overflow-y: scroll; /* Add a scrollbar if the content overflows vertically */
+    font-family: monospace; /* Use a monospaced font for terminal-like appearance */
+    white-space: pre-wrap; /* Preserve line breaks and wrap text as needed */
+  }
+
+button {
+    display: block;
+    margin-top: 1%;
+    padding: 2% 2%;
+    width: 30px;
+    font-size: 16px;
+    background-color:  #ccc;;
+    color: #333;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color:  #a5a5a5;
+}
+
+canvas {
+    border: 1px solid #333;
+    border-radius: 5px;
+    width: 600px;
+    height: 600px;
+}
+
+h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.button-container {
+    display: flex;
+  }
+  
+  .button-container button {
+    margin-right: 10px; /* Adjust the spacing between buttons as needed */
+  }
+
+  .title-bar {
+    background-color: #333;
+    color: white;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .app-name {
+    font-size: 24px;
+  }
+  
+  .documentation-link a {
+    text-decoration: none;
+    color: white; /* Blue color for the link */
+    /* font-weight: bold; */
+  }
+  
+  .documentation-link a:hover {
+    text-decoration: underline; /* Underline on hover */
+  }
+
+  .editor {
+    background-color: #ccc;
+    color: #333;
+    /* padding: 0.5%; */
+    width: 100%;
+    border: 1px solid #ccc;
+    /* border-radius: 5px; */
+    resize: vertical;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .editor-box {
+    background-color: #ccc;
+    color: #333;
+    /* padding: 2%; */
+    width: 100%;
+    padding: 0.5%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  
+  
+  
+  
+
+
+  

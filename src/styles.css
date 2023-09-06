@@ -1,1 +1,76 @@
-/* You can add global styles to this file, and also import other style files */
+/* Reset some default styles */
+body, h1, h2, p {
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* KTurtle-inspired styles */
+  .kturtle-app {
+    font-family: Arial, sans-serif;
+    background-color: #ececec;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .kturtle-header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .kturtle-header h1 {
+    font-size: 28px;
+    color: #007bff;
+  }
+  
+  .kturtle-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  .kturtle-canvas {
+    flex: 1;
+    padding: 20px;
+    position: relative;
+  }
+  
+  canvas {
+    border: 2px solid #ccc;
+    border-radius: 10px;
+  }
+  
+  .kturtle-controls {
+    flex: 1;
+    padding: 20px;
+  }
+  
+  .kturtle-input input {
+    padding: 10px;
+    font-size: 16px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  
+  .kturtle-input button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+  }
+  
+  .kturtle-input button:hover {
+    background-color: #0056b3;
+  }
