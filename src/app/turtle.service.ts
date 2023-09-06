@@ -10,8 +10,7 @@ export class TurtleService {
   private isPenDown: boolean = true;
   private penWidth: number = 1;
   private penColor: string = 'black';
-  // private linePoints: [number, number][] = [];
-  private linePoints: { x: number; y: number; color: string; width: number; penDown: boolean }[] = [];
+  public animationSpeed: number = 5;
   private strokes: { 
     startX: number; 
     startY: number; 
@@ -61,6 +60,26 @@ export class TurtleService {
 
       const numberOfArgs_ = argsWithoutSpaces.split(',').map(arg => arg.trim());
       const numberOfArgs = numberOfArgs_.filter(item => item !== '');
+
+      const allowedCommands: string[] = [
+        "forward",
+        "backward",
+        "turnleft",
+        "turnright",
+        "direction",
+        "center",
+        "go",
+        "gox",
+        "goy",
+        "penup",
+        "pendown",
+        "penwidth",
+        "pencolor"
+      ];
+
+      if (!allowedCommands.includes(cmd)) {
+        throw new Error(`Unknown command: ${cmd}`);
+      }
 
       const expectedArgsCount = this.getExpectedArgsCount(cmd);
       if (numberOfArgs.length !== expectedArgsCount) {
@@ -277,23 +296,20 @@ export class TurtleService {
     penDown: boolean
   ): Promise<void> {
     this.isAnimationInProgress = true;
+    const animationSpeed = this.animationSpeed;
+    const duration = 1000 / animationSpeed; 
+  
     return new Promise<void>((resolve) => {
-      const totalFrames = 60;
-      let progress = 0;
-
-      const drawFrame = () => {
-        if (progress > totalFrames) {
-          this.isAnimationInProgress = false;
-          resolve();
-          return;
-        }
-
-        const fraction = progress / totalFrames;
-        const currentX = startX + (endX - startX) * fraction;
-        const currentY = startY + (endY - startY) * fraction;
-
+      const startTime = performance.now();
+      const drawFrame = (timestamp: number) => {
+        const elapsed = timestamp - startTime;
+        const progress = Math.min(elapsed / duration, 1); 
+  
+        const currentX = startX + (endX - startX) * progress;
+        const currentY = startY + (endY - startY) * progress;
+  
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-
+  
         for (let i = 0; i < this.strokes.length; i++) {
           const stroke = this.strokes[i];
           if (stroke.penDown) {
@@ -305,54 +321,26 @@ export class TurtleService {
             ctx.stroke();
           }
         }
-
+  
         this.drawTriangle(ctx, currentX, currentY, this.direction);
-
+  
         if (penDown) {
           this.strokes.push({ startX, startY, endX: currentX, endY: currentY, color, width, penDown });
         }
-
-        progress++;
-
-        requestAnimationFrame(drawFrame);
+  
+        if (progress < 1) {
+          requestAnimationFrame(drawFrame);
+        } else {
+          this.isAnimationInProgress = false;
+          resolve();
+        }
       };
-
-      drawFrame();
+  
+      requestAnimationFrame(drawFrame);
     });
   }
   
   
-  private move(distance: number): void {
-    const newX = this.x + distance * Math.sin(this.direction * (Math.PI / 180));
-    const newY = this.y - distance * Math.cos(this.direction * (Math.PI / 180));
-
-    if (this.isPenDown) {
-      const canvas: HTMLCanvasElement | null = document.querySelector('#turtleCanvas');
-
-      if (canvas) {
-        const ctx = canvas.getContext('2d');
-        if (ctx) {
-          ctx.strokeStyle = this.penColor;
-          ctx.lineWidth = this.penWidth;
-          ctx.beginPath();
-          ctx.moveTo(this.x, this.y);
-          ctx.lineTo(newX, newY);
-          ctx.stroke();
-
-          // Draw the turtle image at the new position (the tip of the stroke)
-          // ctx.drawImage(this.turtleImage, newX - this.turtleImage.width / 2, newY - this.turtleImage.height / 2);
-        } else {
-          console.error('Canvas context not supported.');
-        }
-      } else {
-        console.error('Canvas element not found.');
-      }
-    }
-
-    this.x = newX;
-    this.y = newY;
-  }
-
   private redrawTriangle(ctx: CanvasRenderingContext2D, x: number, y: number): void {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   
@@ -420,9 +408,9 @@ export class TurtleService {
     this.isPenDown = true;
     this.penWidth = 1;
     this.penColor = 'black';
-    this.linePoints = [];
     this.strokes = [];
     this.triangleVertices = [20, 0, 0, -10, 0, 10];
+    
   
     if (canvas) {
       this.x = canvas.width / 2;

@@ -11,6 +11,7 @@ export class AppComponent implements OnInit{
   canvasWidth: number = 500;
   canvasHeight: number = 500;
   executionResult: string = '';
+  animationSpeed: number = 5;
 
   editorConfig = {
     toolbar: [],
@@ -20,6 +21,7 @@ export class AppComponent implements OnInit{
   constructor(public turtleService: TurtleService) {}
   ngOnInit(): void {
     this.turtleService.initializeTurtle();
+    this.animationSpeed = this.turtleService.animationSpeed;
   }
 
   async executeCommand(): Promise<void> {
@@ -37,6 +39,11 @@ export class AppComponent implements OnInit{
       // this.executionResult = error.message;
       this.executionResult = String(error);
     }
+  }
+
+  onSpeedChange(): void {
+    // Update the animation speed in the TurtleService
+    this.turtleService.animationSpeed = this.animationSpeed;
   }
 
   clearTextArea(): void {

@@ -30,7 +30,6 @@ textarea {
     padding: 0.5%;
     font-size: 16px;
     border: 1px solid #ccc;
-    /* border-radius: 5px; */
     resize: vertical;
 }
 
@@ -38,11 +37,11 @@ textarea {
     background-color: lightyellow;
     padding: 0.5%;
     border: 1px solid #ccc;
-    height: 100px; /* Adjust the height as needed */
+    height: 100px; 
     width: 98.8%;
-    overflow-y: scroll; /* Add a scrollbar if the content overflows vertically */
-    font-family: monospace; /* Use a monospaced font for terminal-like appearance */
-    white-space: pre-wrap; /* Preserve line breaks and wrap text as needed */
+    overflow-y: scroll; 
+    font-family: monospace; 
+    white-space: pre-wrap; 
   }
 
 button {
@@ -65,8 +64,8 @@ button:hover {
 canvas {
     border: 1px solid #333;
     border-radius: 5px;
-    width: 600px;
-    height: 600px;
+    width: 100%;
+    height: 100%;
 }
 
 h2 {
@@ -78,58 +77,68 @@ h2 {
     display: flex;
   }
   
-  .button-container button {
-    margin-right: 10px; /* Adjust the spacing between buttons as needed */
-  }
+.button-container button {
+  margin-right: 10px;
+}
 
-  .title-bar {
-    background-color: #333;
-    color: white;
-    padding: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .app-name {
-    font-size: 24px;
-  }
-  
-  .documentation-link a {
-    text-decoration: none;
-    color: white; /* Blue color for the link */
-    /* font-weight: bold; */
-  }
-  
-  .documentation-link a:hover {
-    text-decoration: underline; /* Underline on hover */
-  }
+.title-bar {
+  background-color: #333;
+  color: white;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-  .editor {
-    background-color: #ccc;
-    color: #333;
-    /* padding: 0.5%; */
-    width: 100%;
-    border: 1px solid #ccc;
-    /* border-radius: 5px; */
-    resize: vertical;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .editor-box {
-    background-color: #ccc;
-    color: #333;
-    /* padding: 2%; */
-    width: 100%;
-    padding: 0.5%;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  
-  
+.app-name {
+  font-size: 24px;
+}
+
+.documentation-link a {
+  text-decoration: none;
+  color: white; 
+}
+
+.documentation-link a:hover {
+  text-decoration: underline;
+}
+
+.editor {
+  background-color: #ccc;
+  color: #333;
+  width: 100%;
+  border: 1px solid #ccc;
+  resize: vertical;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.editor-box {
+  background-color: #ccc;
+  color: #333;
+  width: 100%;
+  padding: 0.5%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.speed-slider input[type="range"] {
+  width: 100%;
+  height: 20px;
+  background: #ddd;
+  border-radius: 10px;
+}
+
+.speed-slider input[type="range"]::-webkit-slider-thumb {
+  background-color: darkgrey; 
+}
+
+.speed-slider input[type="range"]::-moz-range-thumb {
+  background-color: #333; 
+}
+
+
   
   
 

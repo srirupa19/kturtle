@@ -17,18 +17,16 @@
           </button>
         </div>
       </div>
-      <!-- <h2>Kturtle Text Editor</h2> -->
-      <textarea [(ngModel)]="commandInput" placeholder="KTurtle commands go here..." spellcheck="false"></textarea>
-      
+      <textarea [(ngModel)]="commandInput" placeholder="KTurtle commands go here..." spellcheck="false"></textarea>      
       <div class="display-area">
         <pre>{{ executionResult }}</pre>
       </div>
     </div>
   </div>
   <div class="canvas">
-    <!-- <h2>Canvas</h2> -->
+    <div class="speed-slider">
+      <input type="range" [(ngModel)]="animationSpeed" (input)="onSpeedChange()" min="1" max="10">
+    </div>
     <canvas id="turtleCanvas" width="500" height="500"></canvas>
-    <!-- <img src="assets/turtle.png" alt="Turtle" /> -->
-    
   </div>
 </div>
