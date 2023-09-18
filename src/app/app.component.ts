@@ -11,7 +11,8 @@ export class AppComponent implements OnInit{
   canvasWidth: number = 500;
   canvasHeight: number = 500;
   executionResult: string = '';
-  animationSpeed: number = 5;
+  animationSpeed: number = 2;
+  title: string = 'kurtle-clone'
 
   editorConfig = {
     toolbar: [],
@@ -25,10 +26,8 @@ export class AppComponent implements OnInit{
   }
 
   async executeCommand(): Promise<void> {
-
     try {
       await this.turtleService.executeCommand(this.commandInput);
-
       this.executionResult = 'Code executed without any errors.';
     } catch (error) {
       this.executionResult = String(error);
