@@ -153,7 +153,7 @@ export class TurtleService {
             throw new Error(`Unexpected text after parsing '${cmd}' command: '${trimmedLine}'`);
           }
           this.goToCenter();
-          this.redrawTriangle(ctx, canvas.width, canvas.height);
+          await this.redrawTriangle(ctx, canvas.width, canvas.height);
           break;
         case 'go':
           const coordinateArgs = arg.split(',').map(arg => arg.trim());
@@ -169,7 +169,7 @@ export class TurtleService {
             throw new Error(`Unexpected text after parsing '${cmd}' command: '${trimmedLine}'`);
           }
           this.goTo(newXcoord, newYcoord);
-          this.redrawTriangle(ctx, newXcoord, newYcoord);
+          await this.redrawTriangle(ctx, newXcoord, newYcoord);
           break;
         case 'gox':
           const newXAxis = parseInt(arg, 10);
@@ -180,7 +180,7 @@ export class TurtleService {
             throw new Error(`Unexpected text after parsing '${cmd}' command: '${trimmedLine}'`);
           }
           this.goToX(newXAxis);
-          this.redrawTriangle(ctx, newXAxis, this.y);
+          await this.redrawTriangle(ctx, newXAxis, this.y);
           break;
         case 'goy':
           const newYAxis = parseInt(arg, 10);
@@ -191,7 +191,7 @@ export class TurtleService {
             throw new Error(`Unexpected text after parsing '${cmd}' command: '${trimmedLine}'`);
           }
           this.goToY(newYAxis);
-          this.redrawTriangle(ctx, this.x, newYAxis);
+          await this.redrawTriangle(ctx, this.x, newYAxis);
           break;
         case 'penup':
           if (cleanCommand !== cmd) {
@@ -324,22 +324,25 @@ export class TurtleService {
         requestAnimationFrame(drawFrame);
     });
   }
+
   
-  private redrawTriangle(ctx: CanvasRenderingContext2D, x: number, y: number): void {
+  private async redrawTriangle(ctx: CanvasRenderingContext2D, x: number, y: number): Promise<void> {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  
-    for (const stroke of this.strokes) {
-      if (stroke.penDown) {
-        ctx.strokeStyle = stroke.color;
-        ctx.lineWidth = stroke.width;
-        ctx.beginPath();
-        ctx.moveTo(stroke.startX, stroke.startY);
-        ctx.lineTo(stroke.endX, stroke.endY);
-        ctx.stroke();
+    return new Promise<void>((resolve) => {
+      for (const stroke of this.strokes) {
+        if (stroke.penDown) {
+          ctx.strokeStyle = stroke.color;
+          ctx.lineWidth = stroke.width;
+          ctx.beginPath();
+          ctx.moveTo(stroke.startX, stroke.startY);
+          ctx.lineTo(stroke.endX, stroke.endY);
+          ctx.stroke();
+        }
       }
-    }
-  
-    this.drawTriangle(ctx, x, y, this.direction);
+    
+      this.drawTriangle(ctx, x, y, this.direction);
+      resolve();
+  });
   }
 
   private async rotateTriangle(ctx: CanvasRenderingContext2D, x: number, y: number, direction: number) : Promise<void> {
