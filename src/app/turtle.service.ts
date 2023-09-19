@@ -38,6 +38,7 @@ export class TurtleService {
 
   public isAnimationInProgress: boolean = false; //pause button
   private triangleVertices: [number, number, number, number, number, number] = [20, 0, 0, -10, 0, 10];
+  private turtleImage !: HTMLImageElement;
 
   constructor() {
     this.initializeTurtle();
@@ -243,15 +244,15 @@ export class TurtleService {
   }
   
   private drawTriangle(ctx: CanvasRenderingContext2D, x: number, y: number, angle: number): void {
+        
+    let newWidth = 32;
+    let newHeight = 32;
     ctx.save();
-
     ctx.translate(x, y);
-    ctx.rotate((angle - 90) * (Math.PI / 180));
-
+    ctx.rotate((angle) * (Math.PI / 180));
+    ctx.translate(-newWidth / 2, -newHeight / 2);
     ctx.beginPath();
-    ctx.moveTo(this.triangleVertices[0], this.triangleVertices[1]);
-    ctx.lineTo(this.triangleVertices[2], this.triangleVertices[3]);
-    ctx.lineTo(this.triangleVertices[4], this.triangleVertices[5]);
+    ctx.drawImage(this.turtleImage, 0, 0, newWidth, newHeight);
     ctx.closePath();
 
     ctx.fillStyle = 'green';
@@ -260,6 +261,11 @@ export class TurtleService {
     ctx.lineWidth = 2;
     ctx.stroke();
     ctx.restore();
+    
+    // ctx.moveTo(this.triangleVertices[0], this.triangleVertices[1]);
+    // ctx.lineTo(this.triangleVertices[2], this.triangleVertices[3]);
+    // ctx.lineTo(this.triangleVertices[4], this.triangleVertices[5]);
+      
   }
   
   private async animateLine(
@@ -437,9 +443,14 @@ export class TurtleService {
     this.strokes = [];
     this.triangleVertices = [20, 0, 0, -10, 0, 10];
     this.isAnimationInProgress = false;
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    this.drawTriangle(ctx, this.x, this.y, this.direction);
+    this.turtleImage = new Image() as any;
+    this.turtleImage.src = '/assets/turtle_icon.png';
+    
+    this.turtleImage.onload = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      this.drawTriangle(ctx, this.x, this.y, this.direction);
+    }
+    
   }
 
   private getExpectedArgsCount(command: string): number {
