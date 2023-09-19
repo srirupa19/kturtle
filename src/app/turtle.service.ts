@@ -271,59 +271,59 @@ export class TurtleService {
     color: string,
     width: number,
     penDown: boolean
-  ): Promise<void> {
-    this.isAnimationInProgress = true;
+): Promise<void> {
     const animationSpeed = 10 - this.animationSpeed + 1;
     const frameRate = 20;
-  
+    const animationDuration = 5000 / frameRate * animationSpeed;
+
     return new Promise<void>((resolve) => {
-      let currentFrame = 0;
-      const framesPerStep = Math.ceil(animationSpeed * frameRate);
-  
-      const drawFrame = () => {
-        const progress = currentFrame / framesPerStep;
-        let currentX = startX + (endX - startX) * progress;
-        let currentY = startY + (endY - startY) * progress;
-  
-        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  
-        this.strokes
-          .filter((stroke) => stroke.penDown)
-          .forEach((stroke) => {
-            ctx.strokeStyle = stroke.color;
-            ctx.lineWidth = stroke.width;
-            ctx.beginPath();
-            ctx.moveTo(stroke.startX, stroke.startY);
-            ctx.lineTo(stroke.endX, stroke.endY);
-            ctx.stroke();
-          });
-  
-        if (penDown) {
-          ctx.strokeStyle = color;
-          ctx.lineWidth = width;
-          ctx.beginPath();
-          ctx.moveTo(startX, startY);
-          ctx.lineTo(currentX, currentY);
-          ctx.stroke();
-        }
-  
-        this.drawTriangle(ctx, currentX, currentY, this.direction);
-  
-        if (progress < 1) {
-          currentFrame++;
-          requestAnimationFrame(drawFrame);
-        } else {
-          if (penDown) {
-            this.strokes.push({ startX, startY, endX, endY, color, width, penDown });
-          }
-          resolve();
-        }
-      };
-  
-      requestAnimationFrame(drawFrame);
+        const startTime = performance.now();
+
+        const drawFrame = () => {
+            const currentTime = performance.now();
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / animationDuration, 1);
+
+            let currentX = startX + (endX - startX) * progress;
+            let currentY = startY + (endY - startY) * progress;
+
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+            this.strokes
+                .filter((stroke) => stroke.penDown)
+                .forEach((stroke) => {
+                    ctx.strokeStyle = stroke.color;
+                    ctx.lineWidth = stroke.width;
+                    ctx.beginPath();
+                    ctx.moveTo(stroke.startX, stroke.startY);
+                    ctx.lineTo(stroke.endX, stroke.endY);
+                    ctx.stroke();
+                });
+
+            if (penDown) {
+                ctx.strokeStyle = color;
+                ctx.lineWidth = width;
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+                ctx.lineTo(currentX, currentY);
+                ctx.stroke();
+            }
+
+            this.drawTriangle(ctx, currentX, currentY, this.direction);
+
+            if (progress < 1) {
+                requestAnimationFrame(drawFrame);
+            } else {
+                if (penDown) {
+                    this.strokes.push({ startX, startY, endX, endY, color, width, penDown });
+                }
+                resolve();
+            }
+        };
+
+        requestAnimationFrame(drawFrame);
     });
   }
-  
   
   private redrawTriangle(ctx: CanvasRenderingContext2D, x: number, y: number): void {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -346,13 +346,15 @@ export class TurtleService {
 
     const animationSpeed = 10 - this.animationSpeed + 1;
     const frameRate = 20;
+    const animationDuration = 5000 / frameRate * animationSpeed;
   
     return new Promise<void>((resolve) => {
-      let currentFrame = 0;
-      const framesPerStep = Math.ceil(animationSpeed * frameRate);
+      const startTime = performance.now();
   
       const drawFrame = () => {
-        const progress = currentFrame / framesPerStep;
+        const currentTime = performance.now();
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / animationDuration, 1);
         let currentAngle = this.direction + direction * progress;
   
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -366,13 +368,11 @@ export class TurtleService {
             ctx.moveTo(stroke.startX, stroke.startY);
             ctx.lineTo(stroke.endX, stroke.endY);
             ctx.stroke();
-          });
-  
+          });  
   
         this.drawTriangle(ctx, x, y, currentAngle);
   
         if (progress < 1) {
-          currentFrame++;
           requestAnimationFrame(drawFrame);
         } else {
           resolve();
@@ -381,9 +381,6 @@ export class TurtleService {
   
       requestAnimationFrame(drawFrame);
     });
-
-
-
   }
 
   private goToCenter(): void {
