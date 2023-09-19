@@ -341,7 +341,6 @@ export class TurtleService {
       }
     
       this.drawTriangle(ctx, x, y, this.direction);
-      resolve();
   });
   }
 
