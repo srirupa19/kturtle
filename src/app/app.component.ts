@@ -30,6 +30,7 @@ export class AppComponent implements OnInit{
       await this.turtleService.executeCommand(this.commandInput);
       this.executionResult = 'Code executed without any errors.';
     } catch (error) {
+      this.turtleService.resetTurtlePosition();
       this.executionResult = String(error);
     }
   }

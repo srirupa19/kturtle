@@ -10,7 +10,7 @@ export class TurtleService {
   private isPenDown: boolean = true;
   private penWidth: number = 1;
   private penColor: string = 'black';
-  public animationSpeed: number = 2;
+  public animationSpeed: number = 5;
   private strokes: { 
     startX: number; 
     startY: number; 
@@ -23,9 +23,9 @@ export class TurtleService {
   private allowedCommands: string[] = [
     "forward",
     "backward",
-    "turnleft", // animate rotation
+    "turnleft",
     "turnright",
-    "direction", // direction unambiguois 
+    "direction",
     "center",
     "go",
     "gox",
@@ -58,6 +58,8 @@ export class TurtleService {
 
     let newX: number = this.x;
     let newY: number = this.y;
+
+    this.isAnimationInProgress = true;
 
     for (const line of lines) {
       const trimmedLine = line.trim();
@@ -121,8 +123,8 @@ export class TurtleService {
           if (cleanCommand !== cmd + ' ' + angleLeft) {
             throw new Error(`Unexpected text after parsing '${cmd}' command: '${trimmedLine}'`);
           }
+          await this.rotateTriangle(ctx, this.x, this.y, -angleLeft)
           this.direction -= angleLeft;
-          this.redrawTriangle(ctx, newX, newY);
           break;
         case 'turnright':
           const angleRight = parseInt(arg, 10);
@@ -132,8 +134,8 @@ export class TurtleService {
           if (cleanCommand !== cmd + ' ' + angleRight) {
             throw new Error(`Unexpected text after parsing '${cmd}' command: '${trimmedLine}'`);
           }
+          await this.rotateTriangle(ctx, this.x, this.y, angleRight)
           this.direction += angleRight;
-          this.redrawTriangle(ctx, newX, newY);
           break;
         case 'direction':
           const newDirection = parseInt(arg, 10);
@@ -143,8 +145,8 @@ export class TurtleService {
           if (cleanCommand !== cmd + ' ' + newDirection) {
             throw new Error(`Unexpected text after parsing '${cmd}' command: '${trimmedLine}'`);
           }
-          this.direction = newDirection;
-          this.redrawTriangle(ctx, newX, newY);
+          await this.rotateTriangle(ctx, this.x, this.y, newDirection)
+          this.direction += newDirection;
           break;
         case 'center':
           if (cleanCommand !== cmd) {
@@ -233,6 +235,11 @@ export class TurtleService {
           throw new Error(`Unknown command: ${cmd}`);
       }
     }
+    if (this.strokes.length ===  0) {
+      this.resetTurtlePosition();
+    } 
+    this.isAnimationInProgress = false;
+    
   }
   
   private drawTriangle(ctx: CanvasRenderingContext2D, x: number, y: number, angle: number): void {
@@ -267,7 +274,7 @@ export class TurtleService {
   ): Promise<void> {
     this.isAnimationInProgress = true;
     const animationSpeed = 10 - this.animationSpeed + 1;
-    const frameRate = 30;
+    const frameRate = 20;
   
     return new Promise<void>((resolve) => {
       let currentFrame = 0;
@@ -309,7 +316,6 @@ export class TurtleService {
           if (penDown) {
             this.strokes.push({ startX, startY, endX, endY, color, width, penDown });
           }
-          this.isAnimationInProgress = false;
           resolve();
         }
       };
@@ -334,6 +340,50 @@ export class TurtleService {
     }
   
     this.drawTriangle(ctx, x, y, this.direction);
+  }
+
+  private async rotateTriangle(ctx: CanvasRenderingContext2D, x: number, y: number, direction: number) : Promise<void> {
+
+    const animationSpeed = 10 - this.animationSpeed + 1;
+    const frameRate = 20;
+  
+    return new Promise<void>((resolve) => {
+      let currentFrame = 0;
+      const framesPerStep = Math.ceil(animationSpeed * frameRate);
+  
+      const drawFrame = () => {
+        const progress = currentFrame / framesPerStep;
+        let currentAngle = this.direction + direction * progress;
+  
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  
+        this.strokes
+          .filter((stroke) => stroke.penDown)
+          .forEach((stroke) => {
+            ctx.strokeStyle = stroke.color;
+            ctx.lineWidth = stroke.width;
+            ctx.beginPath();
+            ctx.moveTo(stroke.startX, stroke.startY);
+            ctx.lineTo(stroke.endX, stroke.endY);
+            ctx.stroke();
+          });
+  
+  
+        this.drawTriangle(ctx, x, y, currentAngle);
+  
+        if (progress < 1) {
+          currentFrame++;
+          requestAnimationFrame(drawFrame);
+        } else {
+          resolve();
+        }
+      };
+  
+      requestAnimationFrame(drawFrame);
+    });
+
+
+
   }
 
   private goToCenter(): void {
